@@ -1,12 +1,14 @@
-const express = require('express');
-const { exec } = require('child_process');
+const express = require("express");
+const cors = require("cors");
+const { spawn } = require("child_process");
+const fs = require("fs");
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(cors());
 
-<<<<<<< HEAD
 app.post("/predict", async(req, res) => {
     try {
         const symptomIndices = req.body.symptomIndices;
@@ -16,61 +18,58 @@ app.post("/predict", async(req, res) => {
         );
         const inputData = [inputDat];
 
-        // Define the correct outputFilePath
-        const outputFilePath = "../backend/output.json";
+        const inputFilePath = "input.json";
+        fs.writeFileSync(inputFilePath, JSON.stringify(inputData));
 
-        fs.readFile(outputFilePath, "utf8", (err, data) => {
-            if (err) {
-                console.error(err);
-                res.status(500).json({ error: "An error occurred" });
-                return;
-            }
+        const pythonProcess = spawn("python3", [
+            "ModelAndNotebook/predict.py",
+            inputFilePath,
+        ]);
 
-            try {
-                const predictionData = JSON.parse(data);
-                res.json(predictionData);
-            } catch (parseError) {
-                console.error("Error parsing JSON:", parseError);
+        let predictions = "";
+        const outputFilePath = "./output.json";
+
+        pythonProcess.stdout.on("data", (data) => {
+            predictions += data.toString();
+        });
+
+        pythonProcess.on("close", (code) => {
+            if (code === 0) {
+                fs.readFile(outputFilePath, "utf8", (err, data) => {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+
+                    try {
+                        const predictionData = JSON.parse(data);
+                        console.log(predictionData);
+
+                        // Send predictions as a response
+                        res.json(predictionData);
+
+                        // Clean up temporary input file
+                        fs.unlinkSync(inputFilePath);
+                    } catch (parseError) {
+                        console.error("Error parsing Python output:", parseError);
+                        res.status(500).json({ error: "An error occurred" });
+                    }
+                    //clean up temporary output file
+                    fs.unlinkSync(outputFilePath);
+                });
+            } else {
+                console.error("Python process exited with code:", code);
                 res.status(500).json({ error: "An error occurred" });
             }
         });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: "An error occurred" });
-=======
-app.post('/predict', (req, res) => {
-    const pythonScriptPath = '../model/predict.py';
-    const indices = req.body.indices;
-    const symptoms = 375;
-    //convert it to binary array
-    const data = [];
-    for (let i = 0; i < 375; i++) {
-        if (indices.includes(i)) {
-            data.push(1);
-        } else {
-            data.push(0);
-        }
->>>>>>> parent of 11778be (Backend Optimized)
     }
-
-    const data2 = [data];
-
-    //pass the data to python script and execute it 
-    const spawn = require("child_process").spawn;
-    const pythonProcess = spawn('python', ["../model/predict.py", JSON.stringify(data2)]);
-    pythonProcess.stdout.on('data', (data) => {
-        console.log(data.toString());
-        res.json(data.toString());
-    });
-
-
-
-
-
-
-
 });
 
+
+
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`App listening at http://localhost:${port}`);
 });
