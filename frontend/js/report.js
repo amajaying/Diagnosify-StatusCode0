@@ -22,8 +22,29 @@ var ans = sessionStorage.getItem("ans");
 console.log(ans);
 
 
-// Push Request to the server
+// Post Request to the server
 var request = new XMLHttpRequest();
 request.open("POST", "http://localhost:3000/insert", true);
 request.setRequestHeader("Content-Type", "application/json");
 request.send(JSON.stringify(ans));
+
+
+
+
+// changing content in the ui
+var r = "Migraneyyy";
+var result = document.getElementById("result");
+result.innerHTML = r;
+
+var pre = "Wash your hands regularly for 20 seconds with soap and water or alcohol-based hand rub,cover your nose and mouth with a disposable tissue or flexed elbow when you cough or sneeze,avoid close contact (1 meter or 3 feet) with people who are unwell,stay home and self-isolate from others in the household if you feel unwell,don't touch your eyes nose or mouth if your hands are not clean";
+
+var precau = document.getElementById("precautions");
+
+pre.split(",").forEach((item) => {
+    precau.innerHTML += "<li>" + item + "." + "</li>";
+});
+
+
+// searching on map
+var map = document.getElementById("map");
+map.innerHTML = '<iframe src="https://www.google.com/maps/search/' + r + ' ' + 'hospital+near+me"></iframe>';
