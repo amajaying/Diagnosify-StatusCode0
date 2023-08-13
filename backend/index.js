@@ -19,7 +19,7 @@ app.post("/predict", async(req, res) => {
         const inputData = [inputDat];
 
         // Define the correct outputFilePath
-        const outputFilePath = "./output.json";
+        const outputFilePath = "../backend/output.json";
 
         fs.readFile(outputFilePath, "utf8", (err, data) => {
             if (err) {
