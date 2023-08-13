@@ -24,7 +24,7 @@ console.log(ans);
 
 // Post Request to the server
 var request = new XMLHttpRequest();
-request.open("POST", "http://localhost:3000/insert", true);
+request.open("POST", "http://localhost:3000/predict", true);
 request.setRequestHeader("Content-Type", "application/json");
 request.send(JSON.stringify(ans));
 
@@ -32,11 +32,19 @@ request.send(JSON.stringify(ans));
 
 
 // changing content in the ui
-var r = "Migraneyyy";
+var r = "Seasonal allergies (hay fever)";
 var result = document.getElementById("result");
+var result1 = document.getElementById("result1");
+result1.innerHTML = '<b>' + r + '</b>' + ' ';
 result.innerHTML = r;
 
-var pre = "Wash your hands regularly for 20 seconds with soap and water or alcohol-based hand rub,cover your nose and mouth with a disposable tissue or flexed elbow when you cough or sneeze,avoid close contact (1 meter or 3 feet) with people who are unwell,stay home and self-isolate from others in the household if you feel unwell,don't touch your eyes nose or mouth if your hands are not clean";
+var descrip = "Seasonal allergies, also known as hay fever, are allergic reactions that happen during certain times of the year, usually when outdoor molds release their spores, and trees, grasses, and weeds release tiny pollen particles into the air to fertilize other plants.The immune systems of people who are allergic to mold spores or pollen treat these particles(called allergens) as invaders and release chemicals, including histamine, into the bloodstream to defend against them.It 's the release of these chemicals that causes allergy symptoms."
+
+var desc = document.getElementById("desc");
+desc.innerHTML = descrip;
+
+
+var pre = "Avoid allergens when possible, use air purifiers, take prescribed antihistamines.";
 
 var precau = document.getElementById("precautions");
 

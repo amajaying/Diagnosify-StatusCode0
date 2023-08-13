@@ -18,47 +18,21 @@ app.post("/predict", async(req, res) => {
         );
         const inputData = [inputDat];
 
-        const inputFilePath = "input.json";
-        fs.writeFileSync(inputFilePath, JSON.stringify(inputData));
-
-        const pythonProcess = spawn("python3", [
-            "ModelAndNotebook/predict.py",
-            inputFilePath,
-        ]);
-
-        let predictions = "";
+        // Define the correct outputFilePath
         const outputFilePath = "./output.json";
 
-        pythonProcess.stdout.on("data", (data) => {
-            predictions += data.toString();
-        });
+        fs.readFile(outputFilePath, "utf8", (err, data) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: "An error occurred" });
+                return;
+            }
 
-        pythonProcess.on("close", (code) => {
-            if (code === 0) {
-                fs.readFile(outputFilePath, "utf8", (err, data) => {
-                    if (err) {
-                        console.error(err);
-                        return;
-                    }
-
-                    try {
-                        const predictionData = JSON.parse(data);
-                        console.log(predictionData);
-
-                        // Send predictions as a response
-                        res.json(predictionData);
-
-                        // Clean up temporary input file
-                        fs.unlinkSync(inputFilePath);
-                    } catch (parseError) {
-                        console.error("Error parsing Python output:", parseError);
-                        res.status(500).json({ error: "An error occurred" });
-                    }
-                    //clean up temporary output file
-                    fs.unlinkSync(outputFilePath);
-                });
-            } else {
-                console.error("Python process exited with code:", code);
+            try {
+                const predictionData = JSON.parse(data);
+                res.json(predictionData);
+            } catch (parseError) {
+                console.error("Error parsing JSON:", parseError);
                 res.status(500).json({ error: "An error occurred" });
             }
         });
@@ -67,8 +41,6 @@ app.post("/predict", async(req, res) => {
         res.status(500).json({ error: "An error occurred" });
     }
 });
-
-
 
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`);
