@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
+=======
+    "body-parser": "^1.20.2",
+>>>>>>> 11778be848a9b222c40dd2aaf206547b59822bfa
     "child_process": "^1.0.2",
     "cors": "^2.8.5",
     "express": "^4.18.2"
