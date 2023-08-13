@@ -45,3 +45,17 @@ function displaySelectedSymptoms() {
 
 document.getElementById('searchBar').addEventListener('input', displaySymptoms);
 displaySymptoms();
+
+var ans = sessionStorage.getItem('ans');
+
+// add selected symptoms index to ans string
+
+var next = document.getElementById('next');
+
+next.onclick = function() {
+    selectedSymptoms.forEach((symptom) => {
+        ans += allSymptoms.indexOf(symptom) + ',';
+    });
+
+    sessionStorage.setItem('ans', ans);
+}

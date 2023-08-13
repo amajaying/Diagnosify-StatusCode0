@@ -1,5 +1,3 @@
-// change multiple slider values
-
 var sliders = document.getElementsByClassName("slider-bar");
 var values = document.getElementsByClassName("value");
 
@@ -16,7 +14,7 @@ var ans = '';
 next.onclick = function() {
     for (var i = 0; i < sliders.length; i++) {
         if (sliders[i].value >= 5) {
-            ans += i;
+            ans += i + ',';
         }
     }
     sessionStorage.setItem("ans", ans);

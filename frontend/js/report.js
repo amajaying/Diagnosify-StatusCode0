@@ -20,3 +20,10 @@ function showMore() {
 
 var ans = sessionStorage.getItem("ans");
 console.log(ans);
+
+
+// Push Request to the server
+var request = new XMLHttpRequest();
+request.open("POST", "http://localhost:3000/insert", true);
+request.setRequestHeader("Content-Type", "application/json");
+request.send(JSON.stringify(ans));
